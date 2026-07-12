@@ -1,4 +1,5 @@
 name: Deploy MarkItDown container
+# Production deployment is intentionally limited to pushes on main and manual runs.
 
 on:
   workflow_dispatch:
