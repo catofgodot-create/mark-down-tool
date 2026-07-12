@@ -1,6 +1,7 @@
 import os
 import tempfile
 from pathlib import Path
+from urllib.parse import quote
 from fastapi import FastAPI, File, HTTPException, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import Response
@@ -30,7 +31,9 @@ async def convert(file: UploadFile = File(...)):
         result = converter.convert(path)
         markdown = getattr(result, "markdown", None) or getattr(result, "text_content", "")
         name = f'{Path(file.filename or "document").stem}.md'
-        return Response(markdown, media_type="text/markdown; charset=utf-8", headers={"Content-Disposition": f'attachment; filename="{name}"', "Cache-Control": "no-store"})
+        encoded_name = quote(name, safe="")
+        disposition = f"attachment; filename=\"document.md\"; filename*=UTF-8''{encoded_name}"
+        return Response(markdown, media_type="text/markdown; charset=utf-8", headers={"Content-Disposition": disposition, "Cache-Control": "no-store"})
     except Exception as exc:
         raise HTTPException(422, f"MarkItDown could not convert this file: {exc}") from exc
     finally:
