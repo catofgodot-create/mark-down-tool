@@ -5,6 +5,7 @@ import { DragEvent, ChangeEvent, useRef, useState } from "react";
 type Item = { file: File; id: string; status: "ready" | "working" | "done" | "error"; message?: string; url?: string };
 const MAX_FILES = 10;
 const MAX_BYTES = 100 * 1024 * 1024;
+const CONVERT_ENDPOINT = "https://markitdown-converter.catofgodot.workers.dev/convert";
 const ACCEPT = ".pdf,.docx,.pptx,.xlsx,.xls,.html,.htm,.csv,.json,.xml,.epub,.zip,.txt,.md,.jpg,.jpeg,.png,.wav,.mp3";
 
 function prettyBytes(bytes: number) {
@@ -38,10 +39,25 @@ export default function Home() {
     const targets = items.filter(i => i.status === "ready" || i.status === "error");
     await Promise.all(targets.map(async item => {
       setItems(prev => prev.map(i => i.id === item.id ? { ...i, status: "working", message: undefined } : i));
-      const body = new FormData(); body.append("file", item.file);
       try {
-        const res = await fetch("/api/convert", { method: "POST", body });
-        if (!res.ok) throw new Error((await res.json().catch(() => null))?.error || (lang === "en" ? "Conversion failed. Please try again." : "转换失败，请稍后重试。"));
+        let res: Response | undefined;
+        let networkError: unknown;
+        for (let attempt = 0; attempt < 2; attempt += 1) {
+          const body = new FormData(); body.append("file", item.file);
+          try {
+            res = await fetch(CONVERT_ENDPOINT, { method: "POST", body });
+            if (![502, 503, 504].includes(res.status) || attempt === 1) break;
+          } catch (error) {
+            networkError = error;
+            if (attempt === 1) throw error;
+          }
+          await new Promise(resolve => setTimeout(resolve, 1800));
+        }
+        if (!res) throw networkError || new Error("Network request failed");
+        if (!res.ok) {
+          const payload = await res.json().catch(() => null) as { error?: string; detail?: string } | null;
+          throw new Error(payload?.detail || payload?.error || (lang === "en" ? "Conversion failed. Please try again." : "转换失败，请稍后重试。"));
+        }
         const blob = await res.blob();
         const url = URL.createObjectURL(blob);
         setItems(prev => prev.map(i => i.id === item.id ? { ...i, status: "done", url } : i));
