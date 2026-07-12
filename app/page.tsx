@@ -90,7 +90,10 @@ export default function Home() {
         {items.map((item, n) => <div className="fileRow" key={item.id}>
           <span className="index">{String(n + 1).padStart(2,"0")}</span><div className="fileMeta"><b>{item.file.name}</b><small>{prettyBytes(item.file.size)}{item.message ? ` · ${item.message}` : ""}</small></div>
           <span className={`status ${item.status}`}>{item.status === "ready" ? (lang === "en" ? "READY" : "等待转换") : item.status === "working" ? (lang === "en" ? "CONVERTING…" : "转换中…") : item.status === "done" ? (lang === "en" ? "DONE" : "已完成") : (lang === "en" ? "FAILED" : "未完成")}</span>
-          {item.status === "done" && item.url ? <a className="download" href={item.url} download={`${item.file.name.replace(/\.[^.]+$/, "")}.md`}>{lang === "en" ? "DOWNLOAD .MD" : "下载 .MD"}</a> : <button className="remove" onClick={() => remove(item.id)} aria-label={`${lang === "en" ? "Remove" : "移除"} ${item.file.name}`}>×</button>}
+          <div className="fileActions">
+            {item.status === "done" && item.url && <a className="download" href={item.url} download={`${item.file.name.replace(/\.[^.]+$/, "")}.md`}>{lang === "en" ? "DOWNLOAD" : "下载"}</a>}
+            <button className="delete" onClick={() => remove(item.id)} aria-label={`${lang === "en" ? "Delete" : "删除"} ${item.file.name}`}>{lang === "en" ? "DELETE" : "删除"}</button>
+          </div>
         </div>)}
         <button className="convert" onClick={convertAll} disabled={!items.some(i => i.status === "ready" || i.status === "error")}><span>{lang === "en" ? "Start conversion" : "开始转换"}</span><i>→</i></button>
       </div>}

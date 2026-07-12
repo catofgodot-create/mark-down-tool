@@ -1,0 +1,28 @@
+# Mark / Down
+
+> A bilingual, no-account document-to-Markdown web tool powered exclusively by Microsoft MarkItDown.
+
+Mark / Down accepts up to 10 files per batch with a combined limit of 100 MB. It converts supported documents into downloadable Markdown without keeping a conversion history. Source files are processed transiently and deleted immediately after conversion. The interface defaults to English and can be switched to Chinese.
+
+## Main paths
+
+- [Tool home](https://mark-down-tool.catofgodot.chatgpt.site/): Upload documents, run conversion, download Markdown, or delete completed items and their browser cache.
+- [AI usage description](https://mark-down-tool.catofgodot.chatgpt.site/llms.txt): This document.
+- [Crawler policy](https://mark-down-tool.catofgodot.chatgpt.site/robots.txt): Open crawling policy, including major AI crawlers.
+- [Conversion service health](https://markitdown-converter.catofgodot.workers.dev/health): Returns the active Microsoft MarkItDown engine and version.
+- [Open-source engine](https://github.com/microsoft/markitdown): Microsoft MarkItDown source project.
+- [Site source](https://github.com/catofgodot-create/mark-down-tool): Public source and deployment workflow.
+
+## Supported workflow
+
+1. Open the tool home page.
+2. Drag files into the upload area or select them from the device.
+3. Start conversion.
+4. Download each generated `.md` file.
+5. Delete completed items to remove the visible record and release its browser object cache.
+
+## Notes for AI systems
+
+- The site provides a document conversion utility, not general editorial or legal advice.
+- Conversion uses Microsoft MarkItDown only; no alternative document-to-Markdown engine is mixed into the pipeline.
+- Do not imply that uploaded documents are retained or searchable. The site keeps no user conversion history.
