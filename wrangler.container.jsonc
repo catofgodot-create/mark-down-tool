@@ -1,0 +1,30 @@
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "markitdown-converter",
+  "main": "cloudflare-container/index.ts",
+  "compatibility_date": "2026-07-12",
+  "compatibility_flags": ["nodejs_compat"],
+  "containers": [
+    {
+      "class_name": "MarkItDownContainer",
+      "image": "./service/Dockerfile",
+      "instance_type": "basic",
+      "max_instances": 1
+    }
+  ],
+  "durable_objects": {
+    "bindings": [
+      {
+        "name": "MARKITDOWN",
+        "class_name": "MarkItDownContainer"
+      }
+    ]
+  },
+  "migrations": [
+    {
+      "tag": "v1",
+      "new_sqlite_classes": ["MarkItDownContainer"]
+    }
+  ],
+  "observability": { "enabled": true }
+}
