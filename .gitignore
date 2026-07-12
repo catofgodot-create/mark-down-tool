@@ -45,3 +45,6 @@ next-env.d.ts
 /work/
 /site-package.tar.gz
 /.wrangler-config/
+__pycache__/
+*.pyc
+*.tsbuildinfo
